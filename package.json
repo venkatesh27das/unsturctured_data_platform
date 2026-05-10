@@ -1,0 +1,48 @@
+{
+  "name": "unstructured-data-platform",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Enterprise unstructured data and AI operations platform prototype.",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview --host 0.0.0.0"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.28.4",
+    "@jridgewell/gen-mapping": "^0.3.11",
+    "@jridgewell/remapping": "^2.3.4",
+    "@jridgewell/resolve-uri": "^3.1.1",
+    "@jridgewell/sourcemap-codec": "^1.5.0",
+    "@jridgewell/trace-mapping": "^0.3.30",
+    "@tailwindcss/vite": "latest",
+    "@vitejs/plugin-react": "^5.1.1",
+    "class-variance-authority": "latest",
+    "clsx": "latest",
+    "d3-array": "^3.2.3",
+    "d3-interpolate": "^3.0.0",
+    "d3-shape": "^3.0.1",
+    "eventemitter3": "^5.0.1",
+    "fast-equals": "^5.2.2",
+    "framer-motion": "latest",
+    "lucide-react": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-router-dom": "latest",
+    "react-transition-group": "^4.4.2",
+    "recharts": "^2.15.3",
+    "recharts-scale": "^0.4.3",
+    "rollup": "^4.60.3",
+    "tailwind-merge": "latest",
+    "tailwindcss": "latest",
+    "tiny-invariant": "^1.3.1",
+    "typescript": "latest",
+    "victory-vendor": "^36.6.8",
+    "vite": "^7.3.3"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest"
+  }
+}
