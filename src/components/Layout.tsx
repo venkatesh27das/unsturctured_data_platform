@@ -3,8 +3,10 @@ import {
   Bot,
   Boxes,
   ChartNoAxesCombined,
-  Menu,
+  ChevronLeft,
+  ChevronRight,
   Search,
+  Settings,
   ShieldCheck,
   Workflow
 } from "lucide-react";
@@ -23,31 +25,37 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   return (
     <div className="min-h-screen bg-[#f8f9fa] text-slate-800">
-      <aside className={cn("fixed inset-y-0 left-0 z-20 flex flex-col bg-slate-950 text-slate-200 shadow-card transition-all", collapsed ? "w-[72px]" : "w-64")}>
-        <div className="flex h-16 items-center gap-3 px-4">
+      <aside className={cn("fixed inset-y-0 left-0 z-20 flex flex-col border-r border-slate-200 bg-[#f1f2f4] text-slate-700 shadow-[2px_0_10px_rgba(15,23,42,0.03)] transition-all", collapsed ? "w-[72px]" : "w-64")}>
+        <button
+          className="absolute -right-3 top-6 z-30 flex h-6 w-6 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 shadow-soft transition hover:border-orange-200 hover:bg-orange-50 hover:text-orange-700"
+          onClick={() => setCollapsed(!collapsed)}
+          aria-label={collapsed ? "Expand navigation" : "Collapse navigation"}
+          title={collapsed ? "Expand navigation" : "Collapse navigation"}
+        >
+          {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+        </button>
+        <div className={cn("flex h-16 items-center gap-3 px-4", collapsed && "justify-center px-3")}>
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-orange-gradient text-white shadow-orange">
             <Workflow size={19} />
           </div>
           {!collapsed && (
-            <div>
-              <p className="text-sm font-semibold leading-tight text-white">Unstructured Data Platform</p>
-              <p className="text-xs font-medium text-slate-400">Enterprise AI operations</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold leading-tight text-charcoal">Unstructured Data Platform</p>
+              <p className="text-xs font-medium text-orange-700">Enterprise AI operations</p>
             </div>
           )}
         </div>
-        <button className="mx-4 mb-3 flex h-9 items-center justify-center rounded-lg border border-slate-800 text-slate-400 transition hover:bg-slate-900 hover:text-white" onClick={() => setCollapsed(!collapsed)} aria-label="Toggle navigation">
-          <Menu size={18} />
-        </button>
-        <nav className="flex-1 space-y-1 px-2">
+        <nav className="flex-1 space-y-1 px-2.5 pt-2">
           {nav.map((item) => (
             <NavLink
               to={item.path}
               key={item.path}
               className={({ isActive }) =>
                 cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition",
-                  isActive ? "bg-white/10 text-white shadow-inner-soft" : "text-slate-400 hover:bg-white/5 hover:text-white",
-                  collapsed && "justify-center px-2"
+                  "relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition",
+                  isActive ? "bg-orange-50 text-orange-700 shadow-soft" : "text-slate-600 hover:bg-white hover:text-charcoal",
+                  collapsed && "justify-center px-2",
+                  isActive && "before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1 before:rounded-full before:bg-orange-600"
                 )
               }
             >
@@ -56,17 +64,31 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </NavLink>
           ))}
         </nav>
-        {!collapsed && (
-          <div className="m-3 rounded-lg bg-white/5 p-3">
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">Active workspace</p>
-            <p className="mt-1 text-sm font-semibold text-white">Prior Authorization Intelligence</p>
+        <div className="border-t border-slate-200 p-3">
+          <div className={cn("rounded-lg bg-white p-2.5 shadow-soft", collapsed && "p-2")}>
+          <div className={cn("flex items-center gap-2.5", collapsed && "justify-center")}>
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-orange-gradient text-xs font-bold text-white shadow-orange">
+              VD
+            </div>
+            {!collapsed && (
+              <>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold text-charcoal">Venkatesh Das</p>
+                  <p className="truncate text-xs font-medium text-slate-500">Platform owner</p>
+                </div>
+                <button className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-400 transition hover:bg-orange-50 hover:text-orange-700" aria-label="Profile settings">
+                  <Settings size={16} />
+                </button>
+              </>
+            )}
           </div>
-        )}
+          </div>
+        </div>
       </aside>
       <main className={cn("transition-all", collapsed ? "pl-[72px]" : "pl-64")}>
         <header className="sticky top-0 z-10 flex h-16 items-center justify-between bg-[#f8f9fa]/90 px-6 backdrop-blur">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">Enterprise control plane</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-orange-700">Enterprise control plane</p>
             <h1 className="text-xl font-semibold text-charcoal">Unstructured Data Intelligence Platform</h1>
           </div>
           <div className="flex w-[420px] items-center gap-3 rounded-lg bg-white px-3 py-2 shadow-soft">

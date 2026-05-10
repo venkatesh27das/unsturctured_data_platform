@@ -25,7 +25,7 @@ export default function Documents() {
               <div><p className="text-xs font-bold text-slate-500">PAYER DENIAL NOTICE</p><h3 className="text-xl font-bold">Prior Authorization Determination</h3></div>
               <FileText className="text-orange-600" />
             </div>
-            <p className="leading-8 text-slate-700">Claim <mark className="rounded bg-orange-100 px-1">CLM-20491</mark> submitted by <mark className="rounded bg-sky-100 px-1">Northstar Oncology Group</mark> for <mark className="rounded bg-orange-100 px-1">Keytruda</mark> infusion therapy has been denied.</p>
+            <p className="leading-8 text-slate-700">Claim <mark className="rounded bg-orange-100 px-1">CLM-20491</mark> submitted by <mark className="rounded bg-orange-100 px-1">Northstar Oncology Group</mark> for <mark className="rounded bg-orange-100 px-1">Keytruda</mark> infusion therapy has been denied.</p>
             <p className="mt-5 leading-8 text-slate-700">The member record <mark className="rounded bg-rose-100 px-1">MBR-889204</mark> indicates diagnosis <mark className="rounded bg-emerald-100 px-1">C34.90 metastatic NSCLC</mark>. Prior authorization was not present at time of adjudication.</p>
             <div className="mt-8 rounded-xl border border-slate-200">
               <div className="grid grid-cols-3 bg-slate-50 text-xs font-bold uppercase text-slate-500"><span className="p-3">Service</span><span className="p-3">Code</span><span className="p-3">Result</span></div>

@@ -121,16 +121,16 @@ export default function Dashboard() {
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={data.trends}>
                 <defs>
-                  <linearGradient id="blueArea" x1="0" x2="0" y1="0" y2="1">
-                    <stop offset="5%" stopColor="#2563eb" stopOpacity={0.28} />
-                    <stop offset="95%" stopColor="#2563eb" stopOpacity={0} />
+                  <linearGradient id="orangeArea" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="5%" stopColor="#ea580c" stopOpacity={0.24} />
+                    <stop offset="95%" stopColor="#ea580c" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 6" stroke="#e7edf5" vertical={false} />
                 <XAxis dataKey="day" tickLine={false} axisLine={false} />
                 <YAxis tickLine={false} axisLine={false} />
                 <Tooltip />
-                <Area type="monotone" dataKey="ingestion" stroke="#2563eb" fill="url(#blueArea)" strokeWidth={3} />
+                <Area type="monotone" dataKey="ingestion" stroke="#ea580c" fill="url(#orangeArea)" strokeWidth={3} />
                 <Area type="monotone" dataKey="success" stroke="#10b981" fill="transparent" strokeWidth={2} />
                 <Area type="monotone" dataKey="queries" stroke="#0ea5e9" fill="transparent" strokeWidth={2} />
               </AreaChart>

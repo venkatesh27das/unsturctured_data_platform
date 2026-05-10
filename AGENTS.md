@@ -25,15 +25,23 @@ Primary product areas:
 - Prefer scannable tables, compact panels, and clear operating states.
 - Use muted, modern status pills with color-matched text.
 - Use tabular/monospace styling for metrics, scores, latency, and percentages.
+- Keep the Assistant workspace compact. Its body scale is intentionally smaller than the rest of the app; avoid increasing chat/evidence/card padding unless there is a clear usability reason.
+- The sidebar should feel like a dedicated but integrated control panel: light gray tint, subtle right border/shadow, strong active state, and a profile footer.
+- The collapse affordance belongs on the sidebar/main-content boundary as a small circular chevron, not as a standalone hamburger-style nav button.
 
 ## Current Visual System
 
 - Main app background: very light gray/off-white.
 - Main surfaces: white elevated panels using `premium-panel` or `shadow-soft`.
-- Sidebar: dark slate frame.
-- Accent: blue/teal gradient, exposed through the existing `orange-*` Tailwind theme aliases for compatibility.
+- Sidebar: integrated light gray panel with a subtle right border and faint side shadow.
+- Sidebar active state: pale orange background, orange text/icon, and a left orange indicator rail.
+- Sidebar footer: profile/account area with initials avatar, name, role, and settings affordance. Do not restore the old “Active workspace” footer block.
+- Accent: orange/gold brand system, exposed through the existing `orange-*` Tailwind theme aliases for compatibility.
+- User/analyst chat bubble: orange-to-gold gradient. AI responses stay neutral white/elevated.
+- Semantic colors: keep green for success/safety and red/rose for PHI or high-risk warnings.
 - Charts: smooth monotone lines, subtle gradient fills, light horizontal gridlines.
 - Tables: `enterprise-table` provides zebra striping and hover emphasis.
+- Evidence panel tabs: underline-style active state with orange indicator, not pill buttons.
 
 ## Frontend Notes
 

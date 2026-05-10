@@ -116,7 +116,7 @@ export default function EnterpriseSearch() {
             <SectionTitle title="Search Scope" />
             <div className="mt-5 grid grid-cols-2 gap-3">
               <div className="rounded-2xl bg-slate-50 p-4"><Database className="text-orange-600" size={20} /><b className="mt-3 block text-2xl">{searchData.stores.length}</b><p className="text-xs font-bold uppercase tracking-wider text-slate-500">Stores</p></div>
-              <div className="rounded-2xl bg-slate-50 p-4"><BrainCircuit className="text-sky-600" size={20} /><b className="mt-3 block text-2xl">{searchData.knowledgeLayers.length}</b><p className="text-xs font-bold uppercase tracking-wider text-slate-500">Layers</p></div>
+              <div className="rounded-2xl bg-slate-50 p-4"><BrainCircuit className="text-orange-600" size={20} /><b className="mt-3 block text-2xl">{searchData.knowledgeLayers.length}</b><p className="text-xs font-bold uppercase tracking-wider text-slate-500">Layers</p></div>
               <div className="rounded-2xl bg-slate-50 p-4"><ShieldCheck className="text-emerald-600" size={20} /><b className="mt-3 block text-2xl">100%</b><p className="text-xs font-bold uppercase tracking-wider text-slate-500">Governed</p></div>
               <div className="rounded-2xl bg-slate-50 p-4"><FileSearch className="text-indigo-600" size={20} /><b className="mt-3 block text-2xl">{searchData.dataProducts.length}</b><p className="text-xs font-bold uppercase tracking-wider text-slate-500">Products</p></div>
             </div>

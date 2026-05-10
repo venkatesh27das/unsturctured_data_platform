@@ -98,8 +98,8 @@ export default function Governance() {
               <AreaChart data={data.trend}>
                 <defs>
                   <linearGradient id="confidenceArea" x1="0" x2="0" y1="0" y2="1">
-                    <stop offset="5%" stopColor="#2563eb" stopOpacity={0.24} />
-                    <stop offset="95%" stopColor="#2563eb" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#ea580c" stopOpacity={0.22} />
+                    <stop offset="95%" stopColor="#ea580c" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="freshnessArea" x1="0" x2="0" y1="0" y2="1">
                     <stop offset="5%" stopColor="#10b981" stopOpacity={0.14} />
@@ -110,7 +110,7 @@ export default function Governance() {
                 <XAxis dataKey="day" tickLine={false} axisLine={false} />
                 <YAxis tickLine={false} axisLine={false} />
                 <Tooltip />
-                <Area type="monotone" dataKey="confidence" stroke="#2563eb" fill="url(#confidenceArea)" strokeWidth={3} />
+                <Area type="monotone" dataKey="confidence" stroke="#ea580c" fill="url(#confidenceArea)" strokeWidth={3} />
                 <Area type="monotone" dataKey="freshness" stroke="#10b981" fill="url(#freshnessArea)" strokeWidth={2} />
                 <Area type="monotone" dataKey="failed" stroke="#ef4444" fill="transparent" strokeWidth={2} />
               </AreaChart>

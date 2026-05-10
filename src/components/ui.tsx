@@ -17,7 +17,7 @@ export function Card({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.28 }}
       className={cn(
-        "premium-panel rounded-lg bg-white p-4",
+        "premium-panel rounded-lg bg-white p-3.5",
         hover && "transition hover:-translate-y-0.5 hover:shadow-card",
         className
       )}
@@ -32,10 +32,10 @@ export function Badge({ tone = "neutral", children }: { tone?: StatusTone; child
     success: "bg-emerald-50 text-emerald-800 ring-emerald-100",
     warning: "bg-amber-50 text-amber-800 ring-amber-100",
     danger: "bg-rose-50 text-rose-800 ring-rose-100",
-    info: "bg-sky-50 text-sky-800 ring-sky-100",
+    info: "bg-orange-50 text-orange-800 ring-orange-100",
     neutral: "bg-slate-100 text-slate-700 ring-slate-200"
   };
-  return <span className={cn("inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ring-1", tones[tone])}>{children}</span>;
+  return <span className={cn("inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold ring-1", tones[tone])}>{children}</span>;
 }
 
 export function SectionTitle({ title, eyebrow }: { title: string; eyebrow?: string }) {
@@ -51,7 +51,7 @@ export function ProgressBar({ value, tone = "orange" }: { value: number; tone?: 
   const colors = {
     orange: "bg-orange-500",
     green: "bg-emerald-500",
-    blue: "bg-sky-500",
+    blue: "bg-orange-500",
     red: "bg-rose-500"
   };
   return (

@@ -325,7 +325,7 @@ function EnablementTab() {
         <SectionTitle eyebrow="Knowledge Graph" title="Claims, Policy, Provider and Drug Relationships" />
         <div className="relative mt-4 h-[380px] overflow-hidden rounded-lg bg-slate-950">
           <svg className="absolute inset-0 h-full w-full">
-            {[[50,18,24,38],[50,18,74,35],[50,18,48,50],[48,50,28,68],[48,50,74,66],[74,66,50,82],[24,38,50,82]].map((l, i) => <line key={i} x1={`${l[0]}%`} y1={`${l[1]}%`} x2={`${l[2]}%`} y2={`${l[3]}%`} stroke="#38bdf8" strokeOpacity=".45" strokeWidth="2" />)}
+            {[[50,18,24,38],[50,18,74,35],[50,18,48,50],[48,50,28,68],[48,50,74,66],[74,66,50,82],[24,38,50,82]].map((l, i) => <line key={i} x1={`${l[0]}%`} y1={`${l[1]}%`} x2={`${l[2]}%`} y2={`${l[3]}%`} stroke="#f97316" strokeOpacity=".45" strokeWidth="2" />)}
           </svg>
           {nodes.map(([name, left, top]) => <div className="graph-node" style={{ left, top }} key={name}>{name}</div>)}
         </div>
