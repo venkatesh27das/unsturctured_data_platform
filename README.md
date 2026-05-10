@@ -9,6 +9,32 @@ Enterprise unstructured data and AI operations platform prototype. The app demon
 - **Enterprise Assistant**: governed RAG workspace with scoped retrieval stores, chat, evidence, citations, and controls.
 - **Trust & Operations**: reliability, incidents, policy enforcement, audit evidence, and AI quality guardrails.
 
+## Screenshots
+
+### Dashboard
+
+Executive control plane for platform readiness, lifecycle health, operating trends, action queue, and workspace entry points.
+
+![Dashboard](docs/screenshots/dashboard.png)
+
+### Data Catalog
+
+Governed operating model for data assets, source pipelines, extraction jobs, quality gates, AI enablement, lineage, and access.
+
+![Data Catalog](docs/screenshots/data-catalog.png)
+
+### Enterprise Assistant
+
+Three-pane RAG workspace with data-product discovery, retrieval scope, governed chat, evidence, citations, and controls.
+
+![Enterprise Assistant](docs/screenshots/enterprise-assistant.png)
+
+### Trust & Operations
+
+Reliability and control surface for incidents, policy enforcement, AI quality, operational health, and audit evidence.
+
+![Trust & Operations](docs/screenshots/trust-operations.png)
+
 ## Tech Stack
 
 - React, TypeScript, Vite
