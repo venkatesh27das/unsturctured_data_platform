@@ -43,6 +43,18 @@ Primary product areas:
 - Tables: `enterprise-table` provides zebra striping and hover emphasis.
 - Evidence panel tabs: underline-style active state with orange indicator, not pill buttons.
 
+## Screen State
+
+Data Catalog now behaves as a workflow screen, not a static report:
+
+- The header includes a lifecycle strip from source registration through retrieval enablement.
+- Assets are selectable and drive the right-side operational metadata panel.
+- Sources & Pipelines includes selectable connectors, source contract onboarding, preflight validation, and source-to-landing run status.
+- Extraction Jobs includes stage progress, extraction run selection, field review actions, review queue, and entity normalization.
+- Quality & Validation includes selectable validation rules, exception triage, quarantine/assignment actions, validation summary, and quality gates.
+- AI Enablement includes selectable retrieval assets, graph context, retrieval build steps, vector index health, semantic chunks, and publish-to-assistant action.
+- Lineage & Access includes source-to-assistant lineage, access policy selection, policy decision details, and audit readiness.
+
 ## Frontend Notes
 
 Stack:

@@ -34,7 +34,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         >
           {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
         </button>
-        <div className={cn("flex h-16 items-center gap-3 px-4", collapsed && "justify-center px-3")}>
+        <div className={cn("flex h-16 items-center gap-3 border-b border-slate-200 px-4", collapsed && "justify-center px-3")}>
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-orange-gradient text-white shadow-orange">
             <Workflow size={19} />
           </div>
@@ -45,7 +45,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </div>
           )}
         </div>
-        <nav className="flex-1 space-y-1 px-2.5 pt-2">
+        <nav className="flex-1 space-y-2 px-2.5 pt-6">
           {nav.map((item) => (
             <NavLink
               to={item.path}

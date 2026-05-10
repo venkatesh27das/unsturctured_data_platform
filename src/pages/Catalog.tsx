@@ -1,7 +1,9 @@
 import {
   Activity,
+  AlertTriangle,
   BrainCircuit,
   CheckCircle2,
+  ChevronRight,
   DatabaseZap,
   FileSearch,
   FileStack,
@@ -10,12 +12,14 @@ import {
   KeyRound,
   Layers3,
   Network,
+  Plus,
   Search,
   ShieldCheck,
   SlidersHorizontal,
+  Sparkles,
   UploadCloud
 } from "lucide-react";
-import { useState } from "react";
+import { type KeyboardEvent, useState } from "react";
 import { Badge, Card, ProgressBar, SectionTitle } from "../components/ui";
 import { catalogFallback, documentsFallback, ingestionFallback, knowledgeFallback } from "../mockFallbacks";
 import { useApi } from "../hooks/useApi";
@@ -33,8 +37,48 @@ const accessPolicies = [
   { policy: "Raw document export", scope: "Source files", roles: "Data stewards only", result: "Blocked by default" }
 ];
 
+const catalogWorkflow = [
+  { label: "Register source", state: "Complete" },
+  { label: "Land raw files", state: "Complete" },
+  { label: "Extract entities", state: "Running" },
+  { label: "Validate quality", state: "Review" },
+  { label: "Publish data product", state: "Ready" },
+  { label: "Enable retrieval", state: "Ready" }
+];
+
+const connectorBlueprints = [
+  "1. Define system owner, data domain, business purpose, and sensitivity label.",
+  "2. Choose ingestion mode: batch, event stream, API polling, or managed file drop.",
+  "3. Attach a data contract with schema, watermark, freshness SLA, and rejection rules.",
+  "4. Run preflight validation before promoting the source into production."
+];
+
+const extractionRuns = [
+  { id: "EXT-44012", document: "DENIAL-CLM-20491.pdf", stage: "Entity Extract", status: "Review", confidence: 88, owner: "A. Lopez" },
+  { id: "EXT-44008", document: "PA-PACKET-8841.pdf", stage: "Layout Parse", status: "Running", confidence: 92, owner: "R. Shah" },
+  { id: "EXT-43992", document: "POLICY-ONC-PAYER-A-2026.pdf", stage: "Chunk & Embed", status: "Published", confidence: 96, owner: "AI Platform" }
+];
+
+const aiBuildSteps = [
+  { step: "Chunking policy", detail: "Clinical claim sections, payer rules, denial notes", status: "Approved" },
+  { step: "Embedding model", detail: "Domain-tuned text embedding profile", status: "Approved" },
+  { step: "Metadata filters", detail: "Payer, therapy, CPT, date, region, sensitivity", status: "Ready" },
+  { step: "Retriever evaluation", detail: "Golden question set with grounded citations", status: "Running" }
+];
+
+function onEnterOrSpace(action: () => void) {
+  return (event: KeyboardEvent<HTMLElement>) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      action();
+    }
+  };
+}
+
 function AssetsTab() {
   const { data } = useApi("/api/catalog", catalogFallback);
+  const [selectedTitle, setSelectedTitle] = useState(data.products[0]?.title ?? "");
+  const selected = data.products.find((product) => product.title === selectedTitle) ?? data.products[0];
   return (
     <div className="grid grid-cols-1 gap-5 xl:grid-cols-[260px_1fr_340px]">
       <Card className="bg-slate-50">
@@ -62,17 +106,26 @@ function AssetsTab() {
         <Card className="p-0">
           <table className="enterprise-table overflow-hidden rounded-lg">
             <thead>
-              <tr>{["Asset", "Owner", "Freshness", "Sensitivity", "Quality", "Lineage"].map((h) => <th key={h}>{h}</th>)}</tr>
+              <tr>{["Asset", "Owner", "Freshness", "Sensitivity", "Quality", "Lineage", "Action"].map((h) => <th key={h}>{h}</th>)}</tr>
             </thead>
             <tbody>
               {data.products.map((product) => (
-                <tr key={product.title}>
+                <tr
+                  key={product.title}
+                  onClick={() => setSelectedTitle(product.title)}
+                  className={`cursor-pointer ${selected?.title === product.title ? "selected-row" : ""}`}
+                >
                   <td>{product.title}</td>
                   <td>{product.owner}</td>
                   <td>{product.freshness}</td>
                   <td><Badge tone={product.sensitivity.includes("PHI") ? "danger" : "neutral"}>{product.sensitivity}</Badge></td>
                   <td>{product.score}%</td>
                   <td><Badge tone={product.lineage === "Certified" ? "success" : "info"}>{product.lineage}</Badge></td>
+                  <td>
+                    <button className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-bold text-orange-700 hover:bg-orange-100">
+                      Open <ChevronRight size={13} />
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -82,9 +135,17 @@ function AssetsTab() {
 
       <Card>
         <SectionTitle eyebrow="Selected Asset" title="Operational Metadata" />
-        <div className="mt-4 space-y-3 text-sm">
+        <div className="mt-4 rounded-lg bg-orange-50 p-3">
+          <p className="text-xs font-bold uppercase tracking-wider text-orange-700">Active data product</p>
+          <p className="mt-1 font-semibold text-charcoal">{selected?.title}</p>
+          <div className="mt-3 grid grid-cols-2 gap-2 text-xs font-semibold text-slate-600">
+            <span className="rounded-md bg-white px-2 py-1">{selected?.usage}</span>
+            <span className="rounded-md bg-white px-2 py-1">{selected?.score}% quality</span>
+          </div>
+        </div>
+        <div className="mt-3 space-y-3 text-sm">
           {[
-            ["Business owner", "Market Access Analytics"],
+            ["Business owner", selected?.owner ?? "Market Access Analytics"],
             ["Technical owner", "Data Engineering"],
             ["Source systems", "SharePoint, SFTP, payer API"],
             ["Contract", "FHIR claim bundle + document evidence"],
@@ -96,6 +157,10 @@ function AssetsTab() {
             </div>
           ))}
         </div>
+        <div className="mt-4 flex gap-2">
+          <button className="flex-1 rounded-lg bg-orange-600 px-3 py-2 text-sm font-bold text-white shadow-orange">Certify</button>
+          <button className="flex-1 rounded-lg bg-slate-100 px-3 py-2 text-sm font-bold text-slate-700">View lineage</button>
+        </div>
       </Card>
     </div>
   );
@@ -103,23 +168,27 @@ function AssetsTab() {
 
 function SourcesTab() {
   const { data } = useApi("/api/ingestion", ingestionFallback);
+  const [selectedSource, setSelectedSource] = useState(data.connectors[0]?.name ?? "");
+  const selected = data.connectors.find((source) => source.name === selectedSource) ?? data.connectors[0];
   return (
     <div className="grid grid-cols-1 gap-5 xl:grid-cols-[1fr_340px]">
       <div className="space-y-5">
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
           {data.connectors.slice(0, 4).map((source) => (
-            <Card key={source.name} hover>
-              <div className="flex items-start justify-between">
-                <div className="rounded-lg bg-orange-50 p-2.5 text-orange-600"><DatabaseZap size={19} /></div>
-                <Badge tone={source.status === "Connected" ? "success" : source.status === "Degraded" ? "warning" : "neutral"}>{source.status}</Badge>
-              </div>
-              <p className="mt-3 font-semibold text-charcoal">{source.name}</p>
-              <div className="mt-2 space-y-1 text-sm text-slate-600">
-                <p>Watermark: <b>{source.lastSync}</b></p>
-                <p>Cadence: <b>{source.frequency}</b></p>
-                <p>Volume: <b>{source.documents.toLocaleString()}</b></p>
-              </div>
-            </Card>
+            <div key={source.name} onClick={() => setSelectedSource(source.name)} onKeyDown={onEnterOrSpace(() => setSelectedSource(source.name))} role="button" tabIndex={0} className="cursor-pointer text-left">
+              <Card hover className={selected?.name === source.name ? "ring-1 ring-orange-200" : ""}>
+                <div className="flex items-start justify-between">
+                  <div className="rounded-lg bg-orange-50 p-2.5 text-orange-600"><DatabaseZap size={19} /></div>
+                  <Badge tone={source.status === "Connected" ? "success" : source.status === "Degraded" ? "warning" : "neutral"}>{source.status}</Badge>
+                </div>
+                <p className="mt-3 font-semibold text-charcoal">{source.name}</p>
+                <div className="mt-2 space-y-1 text-sm text-slate-600">
+                  <p>Watermark: <b>{source.lastSync}</b></p>
+                  <p>Cadence: <b>{source.frequency}</b></p>
+                  <p>Volume: <b>{source.documents.toLocaleString()}</b></p>
+                </div>
+              </Card>
+            </div>
           ))}
         </div>
 
@@ -151,16 +220,27 @@ function SourcesTab() {
         <SectionTitle eyebrow="Onboard Source" title="Register Connector" />
         <div className="mt-4 rounded-lg border border-dashed border-orange-200 bg-orange-50 p-5 text-center">
           <UploadCloud className="mx-auto text-orange-600" size={28} />
-          <p className="mt-2 font-semibold text-charcoal">Configure landing zone and contract</p>
+          <p className="mt-2 font-semibold text-charcoal">{selected?.name} landing setup</p>
           <p className="text-sm text-slate-600">Schema, watermark, cadence, owner, sensitivity</p>
         </div>
+        <div className="mt-4 space-y-2">
+          {connectorBlueprints.map((item, index) => (
+            <div key={item} className="flex gap-3 rounded-lg bg-slate-50 p-3 text-sm">
+              <span className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${index < 2 ? "bg-emerald-100 text-emerald-700" : "bg-orange-100 text-orange-700"}`}>{index < 2 ? "✓" : index + 1}</span>
+              <span className="leading-5 text-slate-600">{item}</span>
+            </div>
+          ))}
+        </div>
         <div className="mt-4 space-y-3">
-          {["Business domain", "Source system", "Data contract", "Watermark column"].map((field) => (
-            <input key={field} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" placeholder={field} />
+          {["Business domain", "Source system", "Data contract", "Watermark column"].map((field, index) => (
+            <input key={field} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" placeholder={field} defaultValue={index === 1 ? selected?.name : ""} />
           ))}
           <label className="flex items-center justify-between rounded-lg bg-slate-50 p-3 text-sm font-semibold">
             Run preflight validation <input type="checkbox" defaultChecked className="h-4 w-4 accent-orange-600" />
           </label>
+          <button className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-orange-600 px-3 py-2 text-sm font-bold text-white shadow-orange">
+            <Plus size={16} /> Create source contract
+          </button>
         </div>
       </Card>
     </div>
@@ -169,6 +249,8 @@ function SourcesTab() {
 
 function ExtractionTab() {
   const { data } = useApi("/api/documents", documentsFallback);
+  const [activeRunId, setActiveRunId] = useState(extractionRuns[0].id);
+  const activeRun = extractionRuns.find((run) => run.id === activeRunId) ?? extractionRuns[0];
   return (
     <div className="grid grid-cols-1 gap-5 xl:grid-cols-[1fr_360px]">
       <div className="space-y-5">
@@ -189,7 +271,7 @@ function ExtractionTab() {
         </Card>
 
         <Card>
-          <SectionTitle title="Extracted Contract Fields" />
+          <SectionTitle eyebrow={activeRun.id} title="Extracted Contract Fields" />
           <table className="enterprise-table mt-4">
             <thead>
               <tr>{["Field", "Value", "Confidence", "Action"].map((h) => <th key={h}>{h}</th>)}</tr>
@@ -200,7 +282,11 @@ function ExtractionTab() {
                   <td>{label}</td>
                   <td>{value}</td>
                   <td>{confidence}%</td>
-                  <td><Badge tone={(confidence as number) < 88 ? "warning" : "success"}>{(confidence as number) < 88 ? "Review" : "Accept"}</Badge></td>
+                  <td>
+                    <button className={`rounded-md px-2 py-1 text-xs font-bold ${(confidence as number) < 88 ? "bg-amber-50 text-amber-800" : "bg-emerald-50 text-emerald-800"}`}>
+                      {(confidence as number) < 88 ? "Review" : "Accept"}
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -210,7 +296,25 @@ function ExtractionTab() {
 
       <div className="space-y-5">
         <Card>
-          <SectionTitle title="Review Queue" />
+          <SectionTitle title="Extraction Runs" />
+          <div className="mt-4 space-y-2">
+            {extractionRuns.map((run) => (
+              <button
+                key={run.id}
+                onClick={() => setActiveRunId(run.id)}
+                className={`w-full rounded-lg p-3 text-left transition ${activeRun.id === run.id ? "bg-orange-50 ring-1 ring-orange-100" : "bg-slate-50 hover:bg-slate-100"}`}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <b className="text-sm text-charcoal">{run.document}</b>
+                  <Badge tone={run.status === "Published" ? "success" : run.status === "Review" ? "warning" : "info"}>{run.status}</Badge>
+                </div>
+                <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-slate-500">{run.stage} · {run.confidence}% confidence</p>
+              </button>
+            ))}
+          </div>
+        </Card>
+        <Card>
+          <SectionTitle title="Human Review Queue" />
           <div className="mt-4 space-y-3">
             {data.reviewQueue.map((item) => (
               <div key={item.doc} className="rounded-lg bg-slate-50 p-3">
@@ -243,6 +347,8 @@ function ExtractionTab() {
 
 function QualityTab() {
   const { data } = useApi("/api/ingestion", ingestionFallback);
+  const [selectedRule, setSelectedRule] = useState(qualityRules[0].rule);
+  const activeRule = qualityRules.find((rule) => rule.rule === selectedRule) ?? qualityRules[0];
   return (
     <div className="grid grid-cols-1 gap-5 xl:grid-cols-[1fr_340px]">
       <Card>
@@ -253,7 +359,7 @@ function QualityTab() {
           </thead>
           <tbody>
             {qualityRules.map((rule) => (
-              <tr key={rule.rule}>
+              <tr key={rule.rule} onClick={() => setSelectedRule(rule.rule)} className={`cursor-pointer ${activeRule.rule === rule.rule ? "selected-row" : ""}`}>
                 <td>{rule.rule}</td>
                 <td>{rule.target}</td>
                 <td>{rule.score}%</td>
@@ -266,6 +372,22 @@ function QualityTab() {
       </Card>
 
       <div className="space-y-5">
+        <Card>
+          <SectionTitle title="Exception Triage" />
+          <div className="mt-4 rounded-lg bg-orange-50 p-3">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="font-semibold text-charcoal">{activeRule.rule}</p>
+                <p className="mt-1 text-sm text-slate-600">{activeRule.failed} records need steward action before publish.</p>
+              </div>
+              <AlertTriangle className="text-orange-700" size={19} />
+            </div>
+            <div className="mt-3 flex gap-2">
+              <button className="flex-1 rounded-lg bg-orange-600 px-3 py-2 text-sm font-bold text-white">Assign</button>
+              <button className="flex-1 rounded-lg bg-white px-3 py-2 text-sm font-bold text-slate-700 shadow-soft">Quarantine</button>
+            </div>
+          </div>
+        </Card>
         <Card>
           <SectionTitle title="Validation Summary" />
           <div className="mt-4 grid grid-cols-2 gap-3">
@@ -295,6 +417,7 @@ function QualityTab() {
 
 function EnablementTab() {
   const { data } = useApi("/api/knowledge", knowledgeFallback);
+  const [activeAsset, setActiveAsset] = useState("Claims Vector Store");
   const nodes = [
     ["Claim", "50%", "18%"], ["Patient", "24%", "38%"], ["Provider", "74%", "35%"],
     ["Drug", "48%", "50%"], ["Diagnosis", "28%", "68%"], ["Policy", "74%", "66%"], ["Denial Reason", "50%", "82%"]
@@ -310,7 +433,7 @@ function EnablementTab() {
             ["Claims Relationship Graph", "7 node types", "Active"],
             ["Oncology Access Ontology", "95% confidence", "Active"]
           ].map(([name, detail, status]) => (
-            <div key={name} className="rounded-lg bg-slate-50 p-3">
+            <div key={name} onClick={() => setActiveAsset(name)} onKeyDown={onEnterOrSpace(() => setActiveAsset(name))} role="button" tabIndex={0} className={`w-full cursor-pointer rounded-lg p-3 text-left ${activeAsset === name ? "bg-orange-50 ring-1 ring-orange-100" : "bg-slate-50"}`}>
               <div className="flex items-start justify-between gap-2">
                 <b className="text-sm text-charcoal">{name}</b>
                 <Badge tone="success">{status}</Badge>
@@ -332,6 +455,25 @@ function EnablementTab() {
       </Card>
 
       <div className="space-y-5">
+        <Card>
+          <SectionTitle eyebrow={activeAsset} title="Retrieval Build Flow" />
+          <div className="mt-4 space-y-2">
+            {aiBuildSteps.map((step) => (
+              <div key={step.step} className="rounded-lg bg-slate-50 p-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-semibold text-charcoal">{step.step}</p>
+                    <p className="mt-1 text-xs text-slate-500">{step.detail}</p>
+                  </div>
+                  <Badge tone={step.status === "Running" ? "info" : "success"}>{step.status}</Badge>
+                </div>
+              </div>
+            ))}
+          </div>
+          <button className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-orange-600 px-3 py-2 text-sm font-bold text-white shadow-orange">
+            <Sparkles size={16} /> Publish to assistant
+          </button>
+        </Card>
         <Card>
           <SectionTitle title="Vector Index Health" />
           <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
@@ -358,6 +500,8 @@ function EnablementTab() {
 }
 
 function LineageTab() {
+  const [activePolicy, setActivePolicy] = useState(accessPolicies[0].policy);
+  const policy = accessPolicies.find((item) => item.policy === activePolicy) ?? accessPolicies[0];
   return (
     <div className="grid grid-cols-1 gap-5 xl:grid-cols-[1fr_360px]">
       <Card>
@@ -376,6 +520,18 @@ function LineageTab() {
           <p className="mt-2 text-sm leading-6 text-slate-600">
             Ingested from SharePoint, parsed into claim evidence fields, validated against confidence and PHI rules, embedded into the claims vector store, and cited by the assistant with access checks.
           </p>
+          <div className="mt-4 grid grid-cols-1 gap-2 md:grid-cols-3">
+            {[
+              ["Version", "v2026.05.10"],
+              ["Last attested", "Today 10:41"],
+              ["Consumer", "Enterprise Assistant"]
+            ].map(([label, value]) => (
+              <div key={label} className="rounded-lg bg-slate-50 p-3">
+                <p className="text-xs font-bold uppercase tracking-wider text-slate-500">{label}</p>
+                <p className="mt-1 font-semibold">{value}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </Card>
 
@@ -384,13 +540,29 @@ function LineageTab() {
           <SectionTitle title="Access Policies" />
           <div className="mt-4 space-y-3">
             {accessPolicies.map((policy) => (
-              <div key={policy.policy} className="rounded-lg bg-slate-50 p-3">
+              <div key={policy.policy} onClick={() => setActivePolicy(policy.policy)} onKeyDown={onEnterOrSpace(() => setActivePolicy(policy.policy))} role="button" tabIndex={0} className={`w-full cursor-pointer rounded-lg p-3 text-left ${activePolicy === policy.policy ? "bg-orange-50 ring-1 ring-orange-100" : "bg-slate-50"}`}>
                 <div className="flex items-start justify-between gap-3">
                   <b className="text-sm text-charcoal">{policy.policy}</b>
                   <Badge tone={policy.result === "Enforced" ? "success" : policy.result === "Conditional" ? "warning" : "danger"}>{policy.result}</Badge>
                 </div>
                 <p className="mt-1 text-sm text-slate-600">{policy.scope}</p>
                 <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-slate-500">{policy.roles}</p>
+              </div>
+            ))}
+          </div>
+        </Card>
+        <Card>
+          <SectionTitle eyebrow="Policy Decision" title={policy.result} />
+          <div className="mt-4 space-y-3 text-sm">
+            {[
+              ["Identity", "Approved AI user group resolved"],
+              ["Sensitivity", policy.scope.includes("PHI") ? "PHI policy attached" : "Standard enterprise controls"],
+              ["Purpose", "Analytics and grounded assistant answer"],
+              ["Decision", policy.result]
+            ].map(([label, value]) => (
+              <div key={label} className="flex items-center justify-between rounded-lg bg-slate-50 p-3">
+                <span className="font-semibold text-slate-500">{label}</span>
+                <b className="text-right text-charcoal">{value}</b>
               </div>
             ))}
           </div>
@@ -467,6 +639,17 @@ export default function Catalog() {
             <Network size={15} />
             Data contracts, quality gates, lineage, access, and retrieval readiness
           </div>
+        </div>
+        <div className="grid grid-cols-2 gap-2 border-t border-slate-100 bg-slate-50 px-3 py-3 md:grid-cols-3 xl:grid-cols-6">
+          {catalogWorkflow.map((item, index) => (
+            <div key={item.label} className="rounded-lg bg-white px-3 py-2 shadow-soft">
+              <div className="flex items-center justify-between gap-2">
+                <span className="flex h-6 w-6 items-center justify-center rounded-md bg-orange-50 text-xs font-bold text-orange-700">{index + 1}</span>
+                <Badge tone={item.state === "Complete" ? "success" : item.state === "Review" ? "warning" : "info"}>{item.state}</Badge>
+              </div>
+              <p className="mt-2 text-xs font-bold uppercase tracking-wider text-slate-500">{item.label}</p>
+            </div>
+          ))}
         </div>
       </Card>
       {active.component}

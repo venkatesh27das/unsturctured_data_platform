@@ -69,6 +69,11 @@ select {
   box-shadow: inset 3px 0 0 #ea580c;
 }
 
+.enterprise-table tbody tr.selected-row {
+  background: #fff7ed;
+  box-shadow: inset 3px 0 0 #ea580c;
+}
+
 .enterprise-table td:first-child {
   font-weight: 700;
 }
